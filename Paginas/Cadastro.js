@@ -8,23 +8,56 @@ export default function Cadastro({ navigation }) {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const [tel, setTel] = useState('');
+  const [nasc, setNasc] = useState('');
+  const [gen, setGen] = useState('');
   const [loading, setLoading] = useState(false);
 
-  function handleCadastro() {
-    if (!nome || !email || !senha) {
-      Alert.alert('Erro', 'Preencha todos os campos');
-      return;
-    }
+   function formatApi(data){
 
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      Alert.alert('Sucesso', 'Cadastro realizado!', [
-        { text: 'OK', onPress: () => navigation.navigate('Login') }
-      ]);
-    }, 1500);
-  }
+        const [dia, mes, ano] = data.split("/");
+        return `${ano}-${mes}-${dia}`;
 
+        }
+        const values = {
+
+            nome:nome,
+            email:email,
+            senha:senha,
+            telefone:tel,
+            nascimento:formatApi(nasc),
+            genero:gen,
+
+        }
+        async function Cadastrar() {
+
+            if(nome === "" || email === "" || senha === "" || tel === "" ||nasc === "" || gen === ""){
+
+        Alert.alert("ERRO", "Favor Preencher todos os Campos!");
+
+            }else{
+              
+
+                try{
+
+                    const response = await axios.post("http://10.0.2.2:9000/api/cadastro_usuario",values);
+                    console.log(response.data);                
+
+
+                    Alert.alert("Sucesso!", "Cadastro Realizado com sucesso!");
+                    navigation.navigate("Login");
+
+
+                }catch(error){
+
+                console.log("ERRO", error.response.data.errors);
+
+
+                }
+
+            }
+           
+        }
   return (
     <Container>
       <View style={styles.header}>
@@ -52,7 +85,22 @@ export default function Cadastro({ navigation }) {
         secureTextEntry
       />
 
-      <Botao titulo="CADASTRAR" onPress={handleCadastro} loading={loading} />
+<Input
+        placeholder="Telefone"
+        value={tel}
+        onChangeText={setTel}
+      />
+      <Input
+        placeholder="Nascimento"
+        value={nasc}
+        onChangeText={setNasc}
+      />
+      <Input
+        placeholder="Genero"
+        value={gen}
+        onChangeText={setGen}
+      />
+      <Botao titulo="CADASTRAR" onPress={Cadastro} loading={loading} />
 
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Text style={styles.link}>Já tem conta? Faça login</Text>

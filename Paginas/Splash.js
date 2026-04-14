@@ -1,11 +1,26 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Splash({ navigation }) {
+
   useEffect(() => {
-    setTimeout(() => {
-      navigation.replace('Login');
-    }, 2000);
+
+    const validacao = async () => {
+      const token = await AsyncStorage.getItem('token');
+      console.log("token.:", token);
+
+      setTimeout(() => {
+        if (token) {
+          navigation.replace("Cep");
+        } else {
+          navigation.replace("Login");
+        }
+      }, 3000);
+    };
+
+    validacao();
+
   }, []);
 
   return (

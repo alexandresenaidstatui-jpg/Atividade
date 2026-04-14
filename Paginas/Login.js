@@ -3,27 +3,47 @@ import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import Container from '../components/Container';
 import Input from '../components/Input';
 import Botao from '../components/Botao';
+import axios from "axios"
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [loading, setLoading] = useState(false);
 
-  function handleLogin() {
-    if (!email || !senha) {
-      Alert.alert('Erro', 'Preencha todos os campos');
-      return;
-    }
-
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      Alert.alert('Sucesso', 'Login realizado!', [
-        { text: 'OK', onPress: () => navigation.replace('BuscarCep') }
-      ]);
-    }, 1500);
+async function Logar() {
+  if (!email || !senha) {
+    Alert.alert('Erro', 'Preencha todos os campos');
+    return;
   }
 
+  try {
+    setLoading(true);
+
+    const response = await axios.get("http://10.0.2.2:9000/api/login", {
+      params: {
+        email: email,
+        senha: senha
+      }
+    });
+
+    console.log(response.data);
+
+    if (response.data.token) {
+      await AsyncStorage.setItem('token', response.data.token);
+
+      Alert.alert("Sucesso", "Login realizado com sucesso!");
+      navigation.replace("Cep");
+    } else {
+      Alert.alert("Erro", response.data.msg);
+    }
+
+  } catch (error) {
+    console.log("ERRO", error?.response?.data || error.message);
+  } finally {
+    setLoading(false);
+  }
+}
   return (
     <Container>
       <View style={styles.header}>
@@ -45,7 +65,7 @@ export default function Login({ navigation }) {
         secureTextEntry
       />
 
-      <Botao titulo="ENTRAR" onPress={handleLogin} loading={loading} />
+      <Botao titulo="ENTRAR" onPress={Logar} loading={loading} />
 
       <TouchableOpacity onPress={() => navigation.navigate('Cadastro')}>
         <Text style={styles.link}>Não tem conta? Cadastre-se</Text>
