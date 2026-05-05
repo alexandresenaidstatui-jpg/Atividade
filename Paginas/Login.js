@@ -20,7 +20,7 @@ async function Logar() {
   try {
     setLoading(true);
 
-    const response = await axios.get("http://10.0.2.2:9000/api/login", {
+    const response = await axios.get("http://10.0.0.2:8000/api/login", {
       params: {
         email: email,
         senha: senha
