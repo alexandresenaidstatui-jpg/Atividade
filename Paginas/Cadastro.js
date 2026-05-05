@@ -3,8 +3,10 @@ import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import Container from '../components/Container';
 import Input from '../components/Input';
 import Botao from '../components/Botao';
+import axios from 'axios';
 
 export default function Cadastro({ navigation }) {
+
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
@@ -13,9 +15,9 @@ export default function Cadastro({ navigation }) {
   const [gen, setGen] = useState('');
   const [loading, setLoading] = useState(false);
 
-   function formatApi(data){
+   function formatApi(Data){
 
-        const [dia, mes, ano] = data.split("/");
+        const [dia, mes, ano] = Data.split("/");
         return `${ano}-${mes}-${dia}`;
 
         }
@@ -40,7 +42,7 @@ export default function Cadastro({ navigation }) {
 
                 try{
 
-                    const response = await axios.post("http://10.0.2.2:9000/api/cadastro_usuario",values);
+                    const response = await axios.get("http://10.122.41.153:8000/api/cadastrar_usuario",values);
                     console.log(response.data);                
 
 
@@ -100,7 +102,7 @@ export default function Cadastro({ navigation }) {
         value={gen}
         onChangeText={setGen}
       />
-      <Botao titulo="CADASTRAR" onPress={Cadastro} loading={loading} />
+      <Botao titulo="CADASTRAR" onPress={Cadastrar} loading={loading} />
 
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Text style={styles.link}>Já tem conta? Faça login</Text>
@@ -117,20 +119,20 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 35,
     fontWeight: 'bold',
-    color: '#15ff00',
+    color: '#d1e000',
     marginTop: 100,
    
     
   },
   subtitle: {
     fontSize: 25,
-    color: '#15ff00',
+    color: '#d1e000',
     marginTop: 5,
   },
   link: {
     textAlign: 'center',
     marginTop: 20,
-    color: '#15ff00',
+    color: '#004cff',
     fontSize: 20,
   },
 });

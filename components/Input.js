@@ -17,7 +17,7 @@ export default function Input({ placeholder, value, onChangeText, secureTextEntr
 const styles = StyleSheet.create({
   input: {
     borderWidth: 5,
-    borderColor: '#15ff00',
+    borderColor: '#d1e000',
     borderRadius: 8,
     padding: 12,
     fontSize: 16,

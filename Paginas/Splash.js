@@ -36,16 +36,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#9b0bbb',
+    backgroundColor: '#000000',
   },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#15ff00',
+    color: '#d1e000',
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 32,
-    color: '#15ff00',
+    color: '#d1e000',
   },
 });

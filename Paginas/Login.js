@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   link: {
     textAlign: 'center',
     marginTop: 20,
-    color: '#15ff00',
+    color: '#d1e000',
     fontSize: 14,
   },
 });
