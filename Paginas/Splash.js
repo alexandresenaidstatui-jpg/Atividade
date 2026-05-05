@@ -12,7 +12,7 @@ export default function Splash({ navigation }) {
 
       setTimeout(() => {
         if (token) {
-          navigation.replace("Cep");
+          navigation.replace("Home");
         } else {
           navigation.replace("Login");
         }
@@ -26,7 +26,7 @@ export default function Splash({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Bem vindo</Text>
-      <Text style={styles.subtitle}>ao buscaCEP</Text>
+      <Text style={styles.subtitle}>ao XLmotors</Text>
     </View>
   );
 }
