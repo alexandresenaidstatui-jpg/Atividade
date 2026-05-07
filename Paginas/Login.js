@@ -1,54 +1,68 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import Container from '../components/Container';
-import Input from '../components/Input';
-import Botao from '../components/Botao';
-import axios from "axios"
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+} from "react-native";
+
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import Container from "../components/Container";
+import Input from "../components/Input";
+import Botao from "../components/Botao";
 
 export default function Login({ navigation }) {
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
   const [loading, setLoading] = useState(false);
 
-async function Logar() {
-  if (!email || !senha) {
-    Alert.alert('Erro', 'Preencha todos os campos');
-    return;
-  }
-
-  try {
-    setLoading(true);
-
-    const response = await axios.get("http://10.0.0.2:8000/api/login", {
-      params: {
-        email: email,
-        senha: senha
-      }
-    });
-
-    console.log(response.data);
-
-    if (response.data.token) {
-      await AsyncStorage.setItem('token', response.data.token);
-
-      Alert.alert("Sucesso", "Login realizado com sucesso!");
-      navigation.replace("Cep");
-    } else {
-      Alert.alert("Erro", response.data.msg);
+  async function Logar() {
+    if (!email || !senha) {
+      Alert.alert("Erro", "Preencha todos os campos");
+      return;
     }
 
-  } catch (error) {
-    console.log("ERRO", error?.response?.data || error.message);
-  } finally {
-    setLoading(false);
+    try {
+      setLoading(true);
+
+      const response = await axios.get(
+        "http://10.0.2.2:8000/api/login",
+        {
+          params: {
+            email,
+            senha,
+          },
+        }
+      );
+
+      if (response.data.token) {
+        await AsyncStorage.setItem(
+          "token",
+          response.data.token
+        );
+
+        Alert.alert("Sucesso", "Login realizado!");
+        navigation.replace("Home");
+      } else {
+        Alert.alert("Erro", response.data.msg);
+      }
+
+    } catch (error) {
+      console.log(error?.response?.data || error.message);
+      Alert.alert("Erro", "Falha no login");
+    } finally {
+      setLoading(false);
+    }
   }
-}
+
   return (
     <Container>
       <View style={styles.header}>
         <Text style={styles.title}>Login</Text>
-        <Text style={styles.subtitle}>Login</Text>
+        <Text style={styles.subtitle}>Entre na sua conta</Text>
       </View>
 
       <Input
@@ -67,8 +81,10 @@ async function Logar() {
 
       <Botao titulo="ENTRAR" onPress={Logar} loading={loading} />
 
-      <TouchableOpacity onPress={() => navigation.navigate('Cadastro')}>
-        <Text style={styles.link}>Não tem conta? Cadastre-se</Text>
+      <TouchableOpacity onPress={() => navigation.navigate("Cadastro")}>
+        <Text style={styles.link}>
+          Não tem conta? Cadastre-se
+        </Text>
       </TouchableOpacity>
     </Container>
   );
@@ -76,24 +92,21 @@ async function Logar() {
 
 const styles = StyleSheet.create({
   header: {
-    alignItems: 'center',
-    marginBottom: 100,
+    alignItems: "center",
+    marginBottom: 50,
   },
   title: {
-    fontSize: 3,
-    fontWeight: 'bold',
-    color: '#000000',
-    marginBottom: 200,
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#000",
   },
   subtitle: {
-    fontSize: 50,
-    color: '#d1e000',
-    marginTop: 5,
+    fontSize: 16,
+    color: "#d1e000",
   },
   link: {
-    textAlign: 'center',
+    textAlign: "center",
     marginTop: 20,
-    color: '#d1e000',
-    fontSize: 14,
+    color: "#d1e000",
   },
 });

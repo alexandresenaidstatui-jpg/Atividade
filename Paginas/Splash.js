@@ -14,7 +14,7 @@ export default function Splash({ navigation }) {
         if (token) {
           navigation.replace("Home");
         } else {
-          navigation.replace("Login");
+          navigation.replace("Home");
         }
       }, 3000);
     };
