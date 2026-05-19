@@ -1,224 +1,142 @@
-import React, {useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-  TextInput,
-  ActivityIndicator,
-  ScrollView,
-} from "react-native";
-
-import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import Inicio from "./inicio";
+import React, { useState } from 'react';
+import axios from 'axios';
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import Container from '../components/Container';
+import Input from '../components/Input';
+import Botao from '../components/Botao';
 
 export default function Cadastro({ navigation }) {
-  const [form, setForm] = useState({
-    nome: "",
-    email: "",
-    senha: "",
-    telefone: "",
-    nascimento: "",
-    genero: "",
-  });
+  
+  const [nome, setNome] = useState('');
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [tel, setTel] = useState('');
+  const [nasc, setNasc] = useState('');
+  const [gen, setGen] = useState('');
+  //const [loading, setLoading] = useState(false);
 
-  const [loading, setLoading] = useState(false);
+   function formatApi(data){
 
-  function handleChange(field, value) {
-    setForm((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  }
+        const [dia, mes, ano] = data.split("/");
+        return `${ano}-${mes}-${dia}`;
 
-  function validarCampos() {
-    const { nome, email, senha, telefone, nascimento, genero } = form;
-
-    if (!nome || !email || !senha || !telefone || !nascimento || !genero) {
-      Alert.alert("Erro", "Preencha todos os campos");
-      return false;
-    }
-
-    if (!email.includes("@")) {
-      Alert.alert("Erro", "E-mail inválido");
-      return false;
-    }
-
-    if (senha.length < 6) {
-      Alert.alert("Erro", "Senha muito curta");
-      return false;
-    }
-
-    return true;
-  }
-
-  async function Cadastrar() {
-    if (!validarCampos()) return;
-
-    const payload = {
-      nome: form.nome,
-      email: form.email,
-      senha: form.senha,
-      telefone: form.telefone,
-      nascimento: form.nascimento,
-      genero: form.genero,
-    };
-
-    try {
-      setLoading(true);
-
-      const response = await axios.post(
-        "http://10.0.2.2:8000/api/cadastrar_usuario",
-        payload
-      );
-
-      console.log(response.data);
-
-    
-      if (response.data.token) {
-        await AsyncStorage.setItem(
-          "token",
-          response.data.token
-        );
-
-        navigation.replace("Login");
-        return;
-      }
-
-    
-      const login = await axios.get(
-        "http://10.0.2.2:8000/api/login",
-        {
-          params: {
-            email: form.email,
-            senha: form.senha,
-          },
         }
-      );
+        const values = {
 
-      if (login.data.token) {
-        await AsyncStorage.setItem(
-          "token",
-          login.data.token
-        );
+            nome:nome,
+            email:email,
+            senha:senha,
+            telefone:tel,
+            nascimento:formatApi(nasc),
+            genero:gen,
 
-        navigation.replace("Inicio");
-      }
+        }
+        async function Cadastrar() {
 
-    } catch (error) {
-      console.log(error);
-      Alert.alert("Erro", "Erro ao cadastrar");
-    } finally {
-      setLoading(false);
-    }
-  }
+            if(nome === "" || email === "" || senha === "" || tel === "" ||nasc === "" || gen === ""){
+
+        Alert.alert("ERRO", "Favor Preencher todos os Campos!");
+
+            }else{
+              
+
+                try{
+
+                  
+
+                    const response = await axios.post("http://10.0.2.2:8000/api/cadastrar_usuario",values);
+                    console.log(response.data);                
+
+
+                    Alert.alert("Sucesso!", "Cadastro Realizado com sucesso!");
+                    navigation.navigate("Login");
+
+
+                }catch(error){
+
+                console.log("ERRO", error.response.data.errors);
+
+
+                }
+
+            }
+           
+        }
+
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Criar Conta</Text>
+    <Container>
+      <View style={styles.header}>
+        <Text style={styles.title}>Criar Conta</Text>
+        <Text style={styles.subtitle}>Preencha seus dados</Text>
+      </View>
 
-      <TextInput
-        placeholder="Nome"
-        style={styles.input}
-        value={form.nome}
-        onChangeText={(v) => handleChange("nome", v)}
+      <Input
+        placeholder="Nome completo"
+        value={nome}
+        onChangeText={setNome}
       />
 
-      <TextInput
+      <Input
         placeholder="E-mail"
-        style={styles.input}
-        value={form.email}
-        onChangeText={(v) => handleChange("email", v)}
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
       />
 
-      <TextInput
+      <Input
         placeholder="Senha"
-        style={styles.input}
+        value={senha}
+        onChangeText={setSenha}
         secureTextEntry
-        value={form.senha}
-        onChangeText={(v) => handleChange("senha", v)}
       />
 
-      <TextInput
+<Input
         placeholder="Telefone"
-        style={styles.input}
-        value={form.tele}
-        onChangeText={(v) => handleChange("telefone", v)}
+        value={tel}
+        onChangeText={setTel}
       />
-
-      <TextInput
+      <Input
         placeholder="Nascimento"
-        style={styles.input}
-        value={form.nascimento}
-        onChangeText={(v) => handleChange("nascimento", v)}
+        value={nasc}
+        onChangeText={setNasc}
       />
-
-      <TextInput
-        placeholder="Gênero"
-        style={styles.input}
-        value={form.genero}
-        onChangeText={(v) => handleChange("genero", v)}
+      <Input
+        placeholder="Genero"
+        value={gen}
+        onChangeText={setGen}
       />
+      <Botao titulo="CADASTRAR" onPress={Cadastrar} />
 
-      <TouchableOpacity style={styles.botao} onPress={Cadastrar}>
-        {loading ? (
-          <ActivityIndicator color="#000000" />
-        ) : (
-          <Text style={styles.botaoTexto}>CADASTRAR</Text>
-        )}
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <Text style={styles.link}>Já tem conta? Faça login</Text>
       </TouchableOpacity>
-
-      <TouchableOpacity onPress={() => navigation.goBack(Home)}>
-        <Text style={styles.link}>Voltar</Text>
-      </TouchableOpacity>
-    </ScrollView>
+    </Container>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    backgroundColor: "#0D0D0D",
-    padding: 20,
-    justifyContent: "center",
+  header: {
+    alignItems: 'center',
+    marginBottom: 200,
   },
-
   title: {
-    color: "#D4AF37",
-    fontSize: 28,
-    textAlign: "center",
-    marginBottom: 20,
+    fontSize: 35,
+    fontWeight: 'bold',
+    color: '#d1e000',
+    marginTop: 100,
+   
+    
   },
-
-  input: {
-    backgroundColor: "#1A1A1A",
-    color: "#ffffff",
-    borderWidth: 1,
-    borderColor: "#D4AF37",
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 10,
+  subtitle: {
+    fontSize: 25,
+    color: '#d1e000',
+    marginTop: 5,
   },
-
-  botao: {
-    backgroundColor: "#D4AF37",
-    padding: 15,
-    borderRadius: 10,
-    alignItems: "center",
-    marginTop: 10,
-  },
-
-  botaoTexto: {
-    fontWeight: "bold",
-    color: "#000",
-  },
-
   link: {
-    textAlign: "center",
+    textAlign: 'center',
     marginTop: 20,
-    color: "#4D8DFF",
+    color: '#d1e000',
+    fontSize: 20,
   },
-
 });

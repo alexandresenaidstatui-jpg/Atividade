@@ -45,7 +45,7 @@ export default function Inicio({navigation}) {
           </Text>
 
           <View style={styles.actions}>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Listar_carro")}>
               <Text style={styles.buttonText}>Explorar</Text>
             </TouchableOpacity>
 

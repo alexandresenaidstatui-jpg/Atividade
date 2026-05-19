@@ -5,77 +5,67 @@ import Container from '../components/Container';
 import Input from '../components/Input';
 import Botao from '../components/Botao';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRoute } from '@react-navigation/native';
 
-export default function Cadastro({ navigation }) {
+export default function Editar({ navigation }) {
+
+    const route = useRoute();
+    const { item } = route.params || {};
   
-  const [modelo, setModelo] = useState("");
-  const [ano, setAno] = useState("");
-  const [cor, setCor] = useState("");
-  const [placa, setPlaca] = useState("");
-  const [dono, setDono] = useState("");
-  const [valor, setValor] = useState("");
-  const [potencia, setPotencia] = useState("");
-  const [tipo_gasolina, setTipoGasolina] = useState("");
-  const [fabricante, setFabricante] = useState("");
+  const [modelo, setModelo] = useState(item?.modelo || "");
+  const [ano, setAno] = useState(item?.ano?.toString() || "");
+  const [cor, setCor] = useState(item?.cor || "");
+  const [placa, setPlaca] = useState(item?.placa || "");
+  const [dono, setDono] = useState(item?.dono || "");
+  const [valor, setValor] = useState(item?.valor?.toString() || "");
+  const [potencia, setPotencia] = useState(item?.potencia || "");
+  const [tipo_gasolina, setTipoGasolina] = useState(item?.tipo_gasolina?.toString() || "");
+  const [fabricante, setFabricante] = useState(item?.fabricante || "");
   const [loading, setLoading] = useState(false);
-  //const [loading, setLoading] = useState(false);
 
-  //  function formatApi(data){
+  async function Alterar() {
 
-  //       const [dia, mes, ano] = data.split("/");
-  //       return `${ano}-${mes}-${dia}`;
-
-  //       }
-       
-        async function Cadastrar() {
-
-            if(modelo === "" || ano === "" || cor === "" || placa === "" || dono === "" || valor === "" || potencia === "" || tipo_gasolina === "" || fabricante === ""){
-
-        Alert.alert("ERRO", "Favor Preencher todos os Campos!");
-
-            }else{
-              
-
-                try{
-
-                  const token = await AsyncStorage.getItem("token");
-                  console.log("token:", token);
-
-                  if(token){
-
-                    const response = await axios.post("http://10.0.2.2:8000/api/salva_carro",{
-                      
-            token:token,        
-            modelo:modelo,
-            ano:parseInt(ano),
-            cor:cor,
-            placa:placa,
-            dono:dono,
-            valor:parseInt(valor),
-            potencia:potencia,
-            tipo_gasolina:parseInt(tipo_gasolina),
-            fabricante:fabricante,
-
-
-                    });
-                    console.log(response.data);                
-
-
-                    Alert.alert("Sucesso!", "Cadastro Realizado com sucesso!");
-                    navigation.navigate("Inicio");
-
-                  }
-                }catch(error){
-
-                console.log("ERRO", error.response.data.errors);
-
-
-                }
-
-            }
-           
+    try{
+        if (!item?.id) {
+          Alert.alert("ERRO", "Carro nao encontrado para alteracao!");
+          return;
         }
 
+        const token = await AsyncStorage.getItem("token");
+        console.log("token:", token);
+
+        if(token){
+
+          const response = await axios.put("http://10.0.2.2:8000/api/alterar_carro",{
+
+     
+    token:token,
+    id_carro:item.id,
+    modelo:modelo,
+    ano:parseInt(ano),     
+    cor:cor,
+    placa:placa,
+    dono:dono,
+    valor:parseInt(valor),
+    potencia:potencia,
+    tipo_gasolina:parseInt(tipo_gasolina),
+    fabricante:fabricante, 
+
+    
+  });
+        console.log("Resposta da api", response.data.carro);
+        Alert.alert("Sucesso!", "Carro Alterado com Sucesso!");
+        navigation.goBack();
+        }
+
+    }catch(error){
+       
+        console.log("ERRO", error.response?.data?.errors || error.message);
+        Alert.alert("ERRO", "Não foi possível alterar o carro!");
+
+    }
+
+  }
 
   return (
     <Container>
@@ -139,7 +129,7 @@ export default function Cadastro({ navigation }) {
       />
         
     
-      <Botao titulo="CADASTRAR" onPress={Cadastrar} />
+      <Botao titulo="ALTERAR" onPress={Alterar} />
 
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Text style={styles.link}>Já tem conta? Faça login</Text>
