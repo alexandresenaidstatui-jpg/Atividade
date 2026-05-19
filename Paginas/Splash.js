@@ -12,9 +12,9 @@ export default function Splash({ navigation }) {
 
       setTimeout(() => {
         if (token) {
-          navigation.replace("Home");
+          navigation.replace("Inicio");
         } else {
-          navigation.replace("Home");
+          navigation.replace("Inicio");
         }
       }, 3000);
     };

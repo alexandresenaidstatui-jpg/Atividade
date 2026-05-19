@@ -4,7 +4,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Splash from './Paginas/Splash';
 import Login from './Paginas/Login';
 import Cadastro from './Paginas/Cadastro';
-import Home from './Paginas/home';
+import Salvar_carro from './Paginas/cadastrar_carro';
+import Inicio from './Paginas/inicio';
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -14,7 +15,8 @@ export default function App() {
         <Stack.Screen name="Splash" component={Splash} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Cadastro" component={Cadastro} />
-        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="Inicio" component={Inicio} />
+        <Stack.Screen name="Salvar_carro" component={Salvar_carro} />
       </Stack.Navigator>
     </NavigationContainer>
   );

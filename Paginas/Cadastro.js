@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState } from "react";
 import {
   View,
   Text,
@@ -12,7 +12,7 @@ import {
 
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Home from "./home";
+import Inicio from "./inicio";
 
 export default function Cadastro({ navigation }) {
   const [form, setForm] = useState({
@@ -104,7 +104,7 @@ export default function Cadastro({ navigation }) {
           login.data.token
         );
 
-        navigation.replace("Home");
+        navigation.replace("Inicio");
       }
 
     } catch (error) {

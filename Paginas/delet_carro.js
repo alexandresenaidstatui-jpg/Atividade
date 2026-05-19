@@ -13,7 +13,7 @@ import {
   StyleSheet,
 } from "react-native";
 
-export default function Home() {
+export default function HomeScreen() {
   const [dados, setDados] = useState([]);
   const [modal, setModal] = useState(false);
   const [modo, setModo] = useState("create"); // create | edit
